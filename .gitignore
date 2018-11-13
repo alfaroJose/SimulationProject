@@ -1,0 +1,13 @@
+# Eclipse
+.settings/*
+# JetBrains, aka PHPStorm, IntelliJ IDEA
+.idea/*
+### IntelliJ IDEA ###
+*.iws
+*.iml
+*.ipr
+*.class
+# NetBeans
+nbproject/*
+# Visual Studio Code
+.vscode
