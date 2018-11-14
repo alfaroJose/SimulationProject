@@ -11,7 +11,7 @@ public class NumberGenerator {
     private Random r;
     DecimalFormat df;
     public  NumberGenerator(){
-        r = new Random(); //Genera un número entre  0 y 1
+        r = new Random(); //Genera un número entre  0 y 1 11
         df = new DecimalFormat("#.####");
         df.setRoundingMode(RoundingMode.CEILING);
     }
