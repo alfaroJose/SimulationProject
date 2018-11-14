@@ -2,37 +2,34 @@
  * Library with methods for the generation of numbers following some distributions
  */
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Random;
 
 public class NumberGenerator {
 
-    Random r;
+    private Random r;
+    DecimalFormat df;
     public  NumberGenerator(){
         r = new Random(); //Genera un número entre  0 y 1
+        df = new DecimalFormat("#.####");
+        df.setRoundingMode(RoundingMode.CEILING);
     }
 
     //Genera un número entre 0 y 1 y lo redondea
     public double generarNumeroAleatorio(){
-        double x = r.nextDouble();
-        //System.out.println("Numero: " + x);
-        x = Math.round(x * Math.pow(10, 4)); //Redondear el valor a 4 decimales
-        x = x/Math.pow(10, 4);
-        return x;
+        return r.nextDouble();
     }
 
     //Genera el tiempo de llegada de los programas al sistema cuando la dsitribución es exponencial. lamda = 1/30
     public double generarLlegadaExponencial(){
         double nuevoValor;
         double r = generarNumeroAleatorio(); //Se genera un número random r entra 0 y 1
-        if (r != 1) { //Hay que verificar que r no sea 1 para que no se caiga la fórmula
-            //System.out.println("Numero aleatorio es : " + r);
-            nuevoValor = (-30) * (Math.log(1 - r)); //La distribución exponencial tiene una media de 30 segundos
-            nuevoValor = Math.round(nuevoValor * Math.pow(10, 4)); //Redondear el valor a 4 decimales
-            nuevoValor = nuevoValor / Math.pow(10, 4);
-            return nuevoValor;
-        } else {
-            return generarLlegadaExponencial(); //Se vuelve a generar un nuevo número
+        while (r != 1 ){
+            r = generarNumeroAleatorio();
         }
+        nuevoValor = (-30) * (Math.log(1 - r)); //La distribución exponencial tiene una media de 30 segundos
+        return Double.parseDouble(df.format(nuevoValor));
     }
 
     //Genera el tiempo de llegada de los programas al sistema cuando la dsitribución es normal. varianza = 4seg^2, media = 25seg
@@ -47,9 +44,7 @@ public class NumberGenerator {
         nuevoValor = nuevoValor - 6; //La sumatoria de los r sumados se les resta un 6.
 
         double x  = (2*nuevoValor) + 25;
-        x = Math.round(x * Math.pow(10, 4)); //Redondear el valor a 4 decimales
-        x = x/Math.pow(10, 4);
-        return x;
+        return Double.parseDouble(df.format(x));
     }
 
     //Genera el tiempo de uso del dispositivo E/S con una función de densidad.
