@@ -13,17 +13,17 @@ public class Simulator {
     double tiempoTotal; //Tiempo total que corre cada vez la simulacion
     double reloj; //tiempo de reloj actual
     double quantum;
-    String distribuicion;
+    int distribuicion;
 
     NumberGenerator gen;
 
-    public Simulator(int numVeces, double tiempoMax, double q, String h){
+    public Simulator(int numVeces, double tiempoMax, double quantum, int distribucion){
         numCorridas = numVeces;
         tiempoTotal = tiempoMax;
         reloj = 0; //Se inicializa el reloj en 0
         corridaActual = 1;
-        quantum = q;
-        distribuicion = h;
+        this.quantum = quantum;
+        this.distribuicion = distribucion;
         gen = new NumberGenerator();
     }
 
@@ -60,5 +60,9 @@ public class Simulator {
         //System.out.println("Tiempo máximo es  : " + tiempoTotal);
         //System.out.println("Tiempo del quantum es  : " + quantum);
         //System.out.println("Distribucion escogida  : " + distribuicion);
+    }
+
+    public void generarEstadisticas(){
+
     }
 }

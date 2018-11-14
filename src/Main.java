@@ -6,21 +6,37 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner reader = new Scanner(System.in);  // Reading from System.in
-        System.out.println("Digite el numero maximo de corridas de la simulacion: ");
-        int n = reader.nextInt(); // Scans the next token of the input as an int.
-        //once finished
-        System.out.println("Digite el tiempo total en segundos para correr cada vez la simulacion : ");
-        int x = reader.nextInt(); // Scans the next token of the input as an int.
-        //once finished
-        System.out.println("Digite el quatum: ");
-        int y = reader.nextInt(); // Scans the next token of the input as an int.
-        //once finished
-        System.out.println("Digite el tipo de distribucion para las llegadas (exponencial o normal) : ");
-        String g = reader.next(); // Get what the user types.
-        //once finished
-        Simulator simulator = new Simulator(n, x, y, g);
-        simulator.runSimulator();
+        int numero, tiempo, quantum, distribucion;
+        numero = tiempo = quantum = distribucion = -1;
+        Scanner reader = new Scanner(System.in);
 
+        while( numero <= 0 ) {
+            System.out.println("Digite el numero maximo de corridas de la simulacion: ");
+            numero = reader.nextInt();
+            if( numero <= 0 ) System.out.println("El número máximo de corridas no puede ser negativo o cero");
+        }
+
+        while( tiempo <= 0 ) {
+            System.out.println("Digite el tiempo total en segundos para correr cada vez la simulacion : ");
+            tiempo = reader.nextInt();
+            if( tiempo <= 0 ) System.out.println("El tiempo no puede ser negativo o cero");
+        }
+
+        while( quantum <= 0 ) {
+            System.out.println("Digite el quatum: ");
+            quantum = reader.nextInt();
+            if( quantum <= 0 ) System.out.println("El quantum no puede ser negativo o cero");
+        }
+
+        while( distribucion < 1 || distribucion > 2 ) {
+            System.out.println("Seleccione el tipo de distribucion para las llegadas\n" +
+                    "1 para exponencial\n" +
+                    "2 para normal ");
+            distribucion = reader.nextInt();
+            if( distribucion < 1 || distribucion > 2 ) System.out.println("Solo puede escoger entre 1 o 2");
+        }
+
+        Simulator simulator = new Simulator(numero, tiempo, quantum, distribucion);
+        simulator.runSimulator();
     }
 }
