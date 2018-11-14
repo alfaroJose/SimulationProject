@@ -31,16 +31,27 @@ public class Simulator {
 
         while (corridaActual <= numCorridas){
             reloj = 0;
+            Program programaActual = new Program(reloj);
+            double x;
+            do{
+                if(distribuicion == 1){
+                    x = gen.generarLlegadaExponencial();
+                } else {
+                    x = gen.generarLlegadaNormal();
+                }
 
-            while(reloj < tiempoTotal){
-                reloj = reloj + 1; //solo pruebas
-                System.out.println("reloj  : " + reloj);
-            }
+                Program pSiguiente = new Program(x);
+                reloj = reloj + x; //solo pruebas
+                if (reloj+x < tiempoTotal) {
+                    System.out.println("reloj  : " + reloj);
+                }
+            } while(reloj < tiempoTotal);
 
             System.out.println("iteracion actual  : " + corridaActual);
             corridaActual = corridaActual + 1;
         }
-        //ouble x = gen.generarNumeroAleatorio();
+
+        //double x = gen.generarNumeroAleatorio();
         //System.out.println("Numero   es : " + x);
         //double y = gen.generarLlegadaExponencial();
         //System.out.println("Tiempo de llegada exponencial es igual a : " + y);
