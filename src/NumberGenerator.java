@@ -11,7 +11,7 @@ public class NumberGenerator {
     private Random r;
     DecimalFormat df;
     public  NumberGenerator(){
-        r = new Random(); //Genera un número entre  0 y 1 11
+        r = new Random(); //Genera un número entre  0 y 1
         df = new DecimalFormat("#.####");
         df.setRoundingMode(RoundingMode.CEILING);
     }
@@ -25,7 +25,7 @@ public class NumberGenerator {
     public double generarLlegadaExponencial(){
         double nuevoValor;
         double r = generarNumeroAleatorio(); //Se genera un número random r entra 0 y 1
-        while (r != 1 ){
+        while (r == 1 ){
             r = generarNumeroAleatorio();
         }
         nuevoValor = (-30) * (Math.log(1 - r)); //La distribución exponencial tiene una media de 30 segundos
