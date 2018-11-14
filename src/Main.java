@@ -23,7 +23,7 @@ public class Main {
         }
 
         while( quantum <= 0 ) {
-            System.out.println("Digite el quatum: ");
+            System.out.println("Digite el quantum: ");
             quantum = reader.nextInt();
             if( quantum <= 0 ) System.out.println("El quantum no puede ser negativo o cero");
         }

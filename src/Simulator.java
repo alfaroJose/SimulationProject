@@ -34,10 +34,10 @@ public class Simulator {
 
             while(reloj < tiempoTotal){
                 reloj = reloj + 1; //solo pruebas
-                //System.out.println("reloj  : " + reloj);
+                System.out.println("reloj  : " + reloj);
             }
 
-            //System.out.println("iteracion actual  : " + corridaActual);
+            System.out.println("iteracion actual  : " + corridaActual);
             corridaActual = corridaActual + 1;
         }
         //ouble x = gen.generarNumeroAleatorio();
