@@ -4,6 +4,8 @@
  */
 
 import javax.swing.*;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class Simulator {
@@ -35,6 +37,9 @@ public class Simulator {
 
     public void runSimulator(){
 
+        DecimalFormat df = new DecimalFormat("#.####");
+        df.setRoundingMode(RoundingMode.CEILING);
+
         while (corridaActual <= numCorridas){
             reloj = 0;
             listaEventos = new ArrayList<>();
@@ -55,6 +60,7 @@ public class Simulator {
                     //programas.add(programaActual);
                     agregarEvento(programaActual);
                     reloj = reloj + x; //solo pruebas
+                    reloj = Double.parseDouble(df.format(reloj));
                     System.out.println("reloj  : " + reloj);
                 //} else {
                     //reloj = tiempoTotal;
