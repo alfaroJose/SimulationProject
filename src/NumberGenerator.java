@@ -52,7 +52,7 @@ public class NumberGenerator {
         double x;
         double r = generarNumeroAleatorio(); //Se genera un número random r entra 0 y 1
         x = 20*(Math.sqrt(3*r+1));
-        return x;
+        return Double.parseDouble(df.format(x));
     }
 
     //Genera un valor para ver si ocurre o no interrupción. 0-29 Sí ocurre. 30-99 No ocurre
@@ -73,6 +73,6 @@ public class NumberGenerator {
         double x;
         double r = generarNumeroAleatorio(); //Se genera un número random r entra 0 y 1
         x = (b*r + b)/2;
-        return x;
+        return Double.parseDouble(df.format(x));
     }
 }

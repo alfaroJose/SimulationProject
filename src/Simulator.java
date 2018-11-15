@@ -63,8 +63,7 @@ public class Simulator {
             double u;
 
 
-            System.out.println("size  : " + listaEventos.size());
-            double x;
+            //System.out.println("size  : " + listaEventos.size());
             while(reloj < tiempoTotal){
 
                 programaActual = (Program) listaEventos.get(0);//Tomamos el primer valor de la lista
@@ -80,7 +79,7 @@ public class Simulator {
                             System.out.println("Servidor ocupado : " + servidorOcupadoCPU);
                             tamcolaCPU = tamcolaCPU + 1;
                         } else{ //El servidor está libre
-                            System.out.println("Servidor libre : " + servidorOcupadoCPU);
+                            System.out.println("Servidor ocupado : " + servidorOcupadoCPU);
                             servidorOcupadoCPU = true; //Lo ponemos en ocupado
                             z = gen.generarInterrupcion();
                             System.out.println("Interrupción en E1 es : " + z);
@@ -138,8 +137,9 @@ public class Simulator {
 
                     case 3: //Evento 3
                         System.out.println("Programa está en evento 3");
-                        programaActual.setTiempoActual(programaActual.getTiempoActual() + 1); //Es solo una prueba
-                        //reloj = reloj + 1;
+                        programaActual.setTiempoActual(programaActual.getTiempoActual() + 15); //Es solo una prueba
+                        programaActual.setTipoEvento(3);
+                        agregarEvento(programaActual); //Se agrega a la lista
 
                         break;
                 }
