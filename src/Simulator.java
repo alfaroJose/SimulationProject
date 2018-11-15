@@ -163,6 +163,13 @@ public class Simulator {
             corridaActual = corridaActual + 1;
         }
 
+        //imprimir datos de lista
+        /*for ( Program p : listaEventos) {
+            System.out.println(p.getTiempoActual());
+        }*/
+
+
+
         //double x = gen.generarNumeroAleatorio();
         //System.out.println("Numero   es : " + x);
         //double y = gen.generarLlegadaExponencial();
