@@ -2,7 +2,8 @@
  *  Class that stores the information of a program
  */
 public class Program {
-    //private int p_id;
+
+    private int p_id;
     private double tiempoSistema; //Tiempo total que pasa el programa en el sistema
     private double tiempoActual;
     private double tiempoUsoCPU; //Tiempo total que el programa usa el CPU
@@ -19,8 +20,8 @@ public class Program {
     * 3: Volver al CPU/cola CPU*/
     int destino;
 
-    public Program(double tiempoCreacion){
-        //p_id = 0;
+    public Program(double tiempoCreacion, int id){
+        p_id = id;
         tiempoSistema = 0;
         tiempoActual = tiempoCreacion;
         tiempoUsoCPU = 0;
@@ -73,5 +74,9 @@ public class Program {
 
     public void setDestino(int destino) {
         this.destino = destino;
+    }
+
+    public int getP_id() {
+        return p_id;
     }
 }
