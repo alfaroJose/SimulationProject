@@ -60,7 +60,4 @@ public class Program {
     public void setTipoEvento(int tipoEvento) {
         this.tipoEvento = tipoEvento;
     }
-
-
-
 }

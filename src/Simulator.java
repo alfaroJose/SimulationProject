@@ -17,13 +17,13 @@ public class Simulator {
     private double quantum;
     private int distribuicion;
 
-    NumberGenerator gen;
+    private NumberGenerator gen;
     //Se ocupa??
-    ArrayList <Program> programas; //almacena las programas de la simulacion para al final de una corrida poder calcular el tiempo que pasa en el sistema promedio
+    private ArrayList <Program> programas; //almacena las programas de la simulacion para al final de una corrida poder calcular el tiempo que pasa en el sistema promedio
     public static List<Program> listaEventos; //Contiene la lista de los eventos por ejecutar
-    int tamcolaCPU;
-    int tamcolaES;
-    boolean servidorOcupadoCPU; //Si es false es que está libre
+    private int tamcolaCPU;
+    private int tamcolaES;
+    private boolean servidorOcupadoCPU; //Si es false es que está libre
 
 
 
@@ -220,10 +220,6 @@ public class Simulator {
         //System.out.println("Tiempo máximo es  : " + tiempoTotal);
         //System.out.println("Tiempo del quantum es  : " + quantum);
         //System.out.println("Distribucion escogida  : " + distribuicion);
-    }
-
-    public void generarEstadisticas(){
-
     }
 
     public static void agregarEvento(Program p) {
