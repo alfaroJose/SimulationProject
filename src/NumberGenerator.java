@@ -45,11 +45,11 @@ public class NumberGenerator {
         return Double.parseDouble(df.format(x));
     }
 
-    //Genera un valor para ver si ocurre o no interrupción. 0-29 Sí ocurre. 30-99 No ocurre
+    //Genera un valor para ver si ocurre o no interrupción. 0-49 Sí ocurre. 50-99 No ocurre
     public int generarInterrupcion(){
         return randomizer.nextInt(100);
     }
-    //Genera un valor para saber cuál tipo de interrupción es. 0-79 E/S. 80-99 Finaliza.
+    //Genera un valor para saber cuál tipo de interrupción es. 0-39 E/S. 40-99 Finaliza.
     public int generarTipoInterrupcion(){
         return randomizer.nextInt(100);
     }

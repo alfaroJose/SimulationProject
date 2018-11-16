@@ -84,10 +84,10 @@ public class Simulator {
                             servidorOcupadoCPU = true; //Lo ponemos en ocupado
                             z = gen.generarInterrupcion();
                             System.out.println("Interrupción en E1 es : " + z);
-                            if (z <= 29){ //Sí ocurre una interrupción
+                            if (z <= 49){ //Sí ocurre una interrupción
                                 w = gen.generarTipoInterrupcion();
                                 System.out.println("Tipo  de Interrupción en E1 es : " + w);
-                                y = quantum/2 + gen.generarTiempoInterrupcion(quantum);
+                                y = gen.generarTiempoInterrupcion(quantum); // No hay que sumar q/2 porque el valor generado está entre q/2 y q
                                 programaActual.setTiempoActual(programaActual.getTiempoActual() + y);
                                 programaActual.setTipoEvento(3);
                                 agregarEvento(programaActual); //Se agrega a la lista
@@ -130,7 +130,7 @@ public class Simulator {
                                 servidorOcupadoCPU = true; //Lo ponemos en ocupado
                                 z = gen.generarInterrupcion();
                                 System.out.println("Interrupción en E2 es : " + z);
-                                if (z <= 29){ //Sí ocurre una interrupción
+                                if (z <= 49){ //Sí ocurre una interrupción
                                     //w = gen.generarTipoInterrupcion();
                                     //System.out.println("Tipo  de Interrupción en E2 es : " + w);
                                     y = quantum/2 + gen.generarTiempoInterrupcion(quantum);
@@ -158,7 +158,7 @@ public class Simulator {
                             //Cómo saber cuando el programa libera CPU y debe volver a cola de CPU?
                             w = gen.generarTipoInterrupcion();
                             System.out.println("Tipo  de Interrupción en E3 es : " + w);
-                            if(w <= 79){ //La interrupción es E/S
+                            if(w <= 39){ //La interrupción es E/S
                                 programaActual.setTipoEvento(2);
                                 agregarEvento(programaActual);
                             } else { //La interrupción es que el programa finalizó
