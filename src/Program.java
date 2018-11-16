@@ -3,10 +3,10 @@
  */
 public class Program {
     //private int p_id;
-    double tiempoSistema; //Tiempo total que pasa el programa en el sistema
-    double tiempoActual;
-    double tiempoUsoCPU; //Tiempo total que el programa usa el CPU
-    double tiempoUsoES; //Tiempo total que el programa uso el dispositivo E/S
+    private double tiempoSistema; //Tiempo total que pasa el programa en el sistema
+    private double tiempoActual;
+    private double tiempoUsoCPU; //Tiempo total que el programa usa el CPU
+    private double tiempoUsoES; //Tiempo total que el programa uso el dispositivo E/S
     /*Los eventos pueden ser
     1: Llegada de un programa al sistema
     2: Se libera dispositivo E/S

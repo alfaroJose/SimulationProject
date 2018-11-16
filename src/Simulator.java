@@ -10,12 +10,12 @@ import java.util.*;
 
 public class Simulator {
 
-    int numCorridas; //Cantidad de veces que se corre la simulacion
-    int corridaActual; //Numero de corrida por la que se va
-    double tiempoTotal; //Tiempo total que corre cada vez la simulacion
-    double reloj; //tiempo de reloj actual
-    double quantum;
-    int distribuicion;
+    private int numCorridas; //Cantidad de veces que se corre la simulacion
+    private int corridaActual; //Numero de corrida por la que se va
+    private double tiempoTotal; //Tiempo total que corre cada vez la simulacion
+    private double reloj; //tiempo de reloj actual
+    private double quantum;
+    private int distribuicion;
 
     NumberGenerator gen;
     //Se ocupa??
