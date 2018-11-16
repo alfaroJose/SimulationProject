@@ -11,7 +11,7 @@ public class Main {
         Scanner reader = new Scanner(System.in);
         String confirmar = "";
 
-        while( (numero <= 0 && tiempo <= 0 && quantum <= 0 && (distribucion < 1 || distribucion > 2)) || confirmar.equals("n")) {
+        while( numero <= 0 ) {
 
             while (numero <= 0) {
                 System.out.println("Digite el numero maximo de corridas de la simulacion: ");
