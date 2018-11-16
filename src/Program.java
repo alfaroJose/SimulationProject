@@ -13,6 +13,12 @@ public class Program {
     3: Se libera CPU */
     int tipoEvento;
 
+    /*El destinos posibles puede ser:
+    * 1: Salir del sistema (finalizar)
+    * 2: Ir al dispositivo/cola E/S
+    * 3: Volver al CPU/cola CPU*/
+    int destino;
+
     public Program(double tiempoCreacion){
         //p_id = 0;
         tiempoSistema = 0;
@@ -59,5 +65,13 @@ public class Program {
 
     public void setTipoEvento(int tipoEvento) {
         this.tipoEvento = tipoEvento;
+    }
+
+    public int getDestino() {
+        return destino;
+    }
+
+    public void setDestino(int destino) {
+        this.destino = destino;
     }
 }

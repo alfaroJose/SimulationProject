@@ -59,6 +59,7 @@ public class Simulator {
             agregarEvento(programaActual);
             int z;
             int w;
+            int d;
             double y;
             double u;
             double x;
@@ -86,7 +87,14 @@ public class Simulator {
                             System.out.println("Interrupción en E1 es : " + z);
                             if (z <= 49){ //Sí ocurre una interrupción
                                 w = gen.generarTipoInterrupcion();
-                                System.out.println("Tipo  de Interrupción en E1 es : " + w);
+                                if (w <= 39){ //La interrupción es E/S
+                                    programaActual.setDestino(2);
+                                    System.out.println("Tipo  de Interrupción en E1 es : " + w + " = E/S");
+                                } else {
+                                    programaActual.setDestino(1);
+                                    System.out.println("Tipo  de Interrupción en E1 es : " + w + " = Finalizar");
+                                }
+
                                 y = gen.generarTiempoInterrupcion(quantum); // No hay que sumar q/2 porque el valor generado está entre q/2 y q
                                 programaActual.setTiempoActual(programaActual.getTiempoActual() + y);
                                 programaActual.setTipoEvento(3);
@@ -94,6 +102,7 @@ public class Simulator {
                             } else{ //No ocurre una interrupción
                                 programaActual.setTiempoActual(programaActual.getTiempoActual() + quantum);
                                 programaActual.setTipoEvento(3);
+                                programaActual.setDestino(3);
                                 agregarEvento(programaActual); //Se agrega a la lista
                             }
 
@@ -108,7 +117,7 @@ public class Simulator {
 
                         /*El tiempo actual de este programa nuevo es el tiempo en que se creó (x) + el reloj.
                         no hay que setearlo al inicio porque el constructor ya hace eso.*/
-                        programaActual = new Program(reloj + x);
+                        programaActual = new Program(reloj + x); //Se guarda la hora de arriba del programa en tiempoActual
                         programaActual.setTipoEvento(1);
                         agregarEvento(programaActual);
 
@@ -131,15 +140,22 @@ public class Simulator {
                                 z = gen.generarInterrupcion();
                                 System.out.println("Interrupción en E2 es : " + z);
                                 if (z <= 49){ //Sí ocurre una interrupción
-                                    //w = gen.generarTipoInterrupcion();
-                                    //System.out.println("Tipo  de Interrupción en E2 es : " + w);
-                                    y = quantum/2 + gen.generarTiempoInterrupcion(quantum);
+                                    w = gen.generarTipoInterrupcion();
+                                    if (w <= 39){ //La interrupción es E/S
+                                        programaActual.setDestino(2);
+                                        System.out.println("Tipo  de Interrupción después de E2 es : " + w + " = E/S");
+                                    } else {
+                                        programaActual.setDestino(1);
+                                        System.out.println("Tipo  de Interrupción después de E2 es : " + w + " = Finalizar");
+                                    }
+                                    y = gen.generarTiempoInterrupcion(quantum);
                                     programaActual.setTiempoActual(programaActual.getTiempoActual() + y);
                                     programaActual.setTipoEvento(3);
                                     agregarEvento(programaActual); //Se agrega a la lista
                                 } else{ //No ocurre una interrupción
                                     programaActual.setTiempoActual(programaActual.getTiempoActual() + quantum);
                                     programaActual.setTipoEvento(3);
+                                    programaActual.setDestino(3);
                                     agregarEvento(programaActual); //Se agrega a la lista
                                 }
 
@@ -156,14 +172,46 @@ public class Simulator {
                         if(tamcolaCPU >= 0){
                             tamcolaCPU = tamcolaCPU - 1;
                             //Cómo saber cuando el programa libera CPU y debe volver a cola de CPU?
-                            w = gen.generarTipoInterrupcion();
-                            System.out.println("Tipo  de Interrupción en E3 es : " + w);
-                            if(w <= 39){ //La interrupción es E/S
+                            //Se sabe con getDestino del programa actual
+                            d = programaActual.getDestino();
+                            if (d == 1){ //El destino es salir del sistema
+                                System.out.println("Programa ha finalizado");
+                            } else if (d == 2){ //El destino es ir a E/S
                                 programaActual.setTipoEvento(2);
                                 agregarEvento(programaActual);
-                            } else { //La interrupción es que el programa finalizó
-                                //En este caso se saca del sistema
+                            } else { //d == 3 El destino es ir a CPU
+                                //Lo mismo de E1 sin generar llegada
+
+                                if (servidorOcupadoCPU){ //Si el servidor del CPU está ocupado
+                                    tamcolaCPU = tamcolaCPU + 1;
+                                } else { //El servidor está libre
+                                    servidorOcupadoCPU = true; //Lo ponemos en ocupado
+                                    z = gen.generarInterrupcion();
+                                    System.out.println("Interrupción en E2 es : " + z);
+                                    if (z <= 49){ //Sí ocurre una interrupción
+                                        w = gen.generarTipoInterrupcion();
+                                        if (w <= 39){ //La interrupción es E/S
+                                            programaActual.setDestino(2);
+                                            System.out.println("Tipo  de Interrupción después de E2 es : " + w + " = E/S");
+                                        } else {
+                                            programaActual.setDestino(1);
+                                            System.out.println("Tipo  de Interrupción después de E2 es : " + w + " = Finalizar");
+                                        }
+                                        y = gen.generarTiempoInterrupcion(quantum);
+                                        programaActual.setTiempoActual(programaActual.getTiempoActual() + y);
+                                        programaActual.setTipoEvento(3);
+                                        agregarEvento(programaActual); //Se agrega a la lista
+                                    } else{ //No ocurre una interrupción
+                                        programaActual.setTiempoActual(programaActual.getTiempoActual() + quantum);
+                                        programaActual.setTipoEvento(3);
+                                        programaActual.setDestino(3);
+                                        agregarEvento(programaActual); //Se agrega a la lista
+                                    }
+
+                                }
+
                             }
+
                         } else {
                             servidorOcupadoCPU = false; //no-> estadoServidor = libre
                         }
