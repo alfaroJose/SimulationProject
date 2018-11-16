@@ -83,6 +83,7 @@ public class Simulator {
                         if (servidorOcupadoCPU){ //Si el servidor del CPU está ocupado
                             longitudColaCPU = longitudColaCPU + 1;
                             System.out.println("Longitud de colaCPU : " + longitudColaCPU);
+                            //agregarEvento(programaActual); Se pierde el evento
 
                         } else{ //El servidor está libre
                             servidorOcupadoCPU = true; //Lo ponemos en ocupado
@@ -196,15 +197,34 @@ public class Simulator {
                         System.out.println("destino es : " + d);
 
                         if (d == 1){ //El destino es salir del sistema
+                            //Solamente libera CPU
                             System.out.println("¡Programa " + programaActual.getP_id() + " ha finalizado es decir salió del sistema!");
 
+
+                            //Donde va el if de longitudColaCPU? que hace cuando el destino es solo salir del sistema, liberar cpu pero hay gente en colade cpu
+
+                            /*if(longitudColaCPU > 0){
+                                longitudColaCPU = longitudColaCPU - 1;
+                            } else {
+                                servidorOcupadoCPU = false;
+                            }*/
+
+
                         } else if (d == 2){ //El destino es ir a E/S
+                            servidorOcupadoCPU = false;
                             programaActual.setTipoEvento(2);
                             agregarEvento(programaActual);
 
-                        } else { //d == 3 El destino es ir a CPU
+                        } else { //d == 3 El destino es volver a CPU
                             //Lo mismo de E1 sin generar llegada
                             servidorOcupadoCPU = false;
+
+                            if(longitudColaCPU > 0){
+                                longitudColaCPU = longitudColaCPU + 1;
+
+                            } else {
+
+                            }
 
                             if (servidorOcupadoCPU){ //Si el servidor del CPU está ocupado
                                 longitudColaCPU = longitudColaCPU + 1;
@@ -242,16 +262,18 @@ public class Simulator {
 
                             }
 
+                            if(longitudColaCPU > 0){
+                                System.out.println("Longitud de colaCPU : " + longitudColaCPU);
+                                longitudColaCPU = longitudColaCPU - 1;
+
+                            } else {
+                                System.out.println("Longitud de colaCPU : " + longitudColaCPU);
+                                servidorOcupadoCPU = false; //no-> estadoServidor = libre
+                            }
+
                         }
 
-                        if(longitudColaCPU > 0){
-                            System.out.println("Longitud de colaCPU : " + longitudColaCPU);
-                            longitudColaCPU = longitudColaCPU - 1;
 
-                        } else {
-                            System.out.println("Longitud de colaCPU : " + longitudColaCPU);
-                            servidorOcupadoCPU = false; //no-> estadoServidor = libre
-                        }
                         //programaActual.setTiempoActual(programaActual.getTiempoActual() + 15); //Es solo una prueba
                         //programaActual.setTipoEvento(3);
                         //agregarEvento(programaActual); //Se agrega a la lista
