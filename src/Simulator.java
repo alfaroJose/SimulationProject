@@ -151,7 +151,7 @@ public class Simulator {
                         break;
                     case 2: //Evento 2
                         System.out.println("Programa " + programaActual.getP_id() + " está en evento 2");
-                        if (longitudColaES > 0){
+                        if (longitudColaES > 0){ /*No he pasado por este caso con el debug*/
                             System.out.println("Longitud de colaES es mayor a cero");
                             longitudColaES = longitudColaES - 1;
                             Program programaSiguiente = (Program) colaES.get(0);//Tomamos el primer valor de la lista
@@ -163,22 +163,24 @@ public class Simulator {
 
                         } else { //No hay nadie esperando para usar E/S
                             //servidorOcupadoCPU = false; //no-> estadoServidor = libre. El de CPU o E/S?
-                            servidorOcupadoES = true;
+                            servidorOcupadoES = false;
 
-                            u = gen.generarTiempoUsoDispositvo();
+                            //u = gen.generarTiempoUsoDispositvo();
                             //se suma tiempo de uso y tiempo en el sistema y tiempo actual del programa:
-                            programaActual.setTiempoActual(programaActual.getTiempoActual() + u); //E2 = Reloj + Z
-                            programaActual.setTiempoUsoES(programaActual.getTiempoUsoES() + u);
-                            programaActual.setTiempoSistema(programaActual.getTiempoSistema() + u);
-
-                            if (servidorOcupadoCPU){ //Si el servidor del CPU está ocupado /*No he pasado por este caso en el debug*/
+                            //programaActual.setTiempoActual(programaActual.getTiempoActual() + u); //E2 = Reloj + Z
+                            //programaActual.setTiempoUsoES(programaActual.getTiempoUsoES() + u);
+                            //programaActual.setTiempoSistema(programaActual.getTiempoSistema() + u);
+                            /*El programa se libera de E/S hasta seg x y luego va a usar CPU entonces generamos valores aleaorios
+                            * para mandar a E3 con destino correspondiente si preguntamos por el servidorCPU ocupado estaríamos preguntando en el tiempo de reloj actual
+                            * no el tiempo en que E/S se libere y no sabemos si CPU va a estar ocupado en ese momento*/
+                            if (servidorOcupadoCPU){ //Si el servidor del CPU está ocupado
                                 longitudColaCPU = longitudColaCPU + 1;
                                 colaCPU.add(programaActual);
-                                servidorOcupadoES = false;
+                                //servidorOcupadoES = false;
 
-                            } else { //El servidor está libre:
-                                servidorOcupadoES = false; //Ya se liberó E/S y ahora vuelve a CPU
-                                servidorOcupadoCPU = true; //Lo ponemos en ocupado
+                            } else { //El servidor está libre:*/
+                                //servidorOcupadoES = false; //Ya se liberó E/S y ahora vuelve a CPU
+                                //servidorOcupadoCPU = true; //Lo ponemos en ocupado
                                 z = gen.generarInterrupcion();
                                 System.out.println("Interrupción en E2 es : " + z);
                                 if (z <= 49){ //Sí ocurre una interrupción
@@ -282,8 +284,18 @@ public class Simulator {
                                 longitudColaES++;
                                 colaES.add(programaActual);
                             } else { //Se puede liberar E/S
+                                servidorOcupadoES = true;
+                                u = gen.generarTiempoUsoDispositvo();
+                                //se suma tiempo de uso y tiempo en el sistema y tiempo actual del programa:
+                                programaActual.setTiempoActual(programaActual.getTiempoActual() + u); //E2 = Reloj + Z
+                                programaActual.setTiempoUsoES(programaActual.getTiempoUsoES() + u);
+                                programaActual.setTiempoSistema(programaActual.getTiempoSistema() + u);
+
                                 programaActual.setTipoEvento(2);
                                 agregarEvento(programaActual);
+
+
+
                                 //se pregunta si hay cola de CPU para poner a usarlo
                                 if (longitudColaCPU > 0){
                                     //sacar de en cola al siguiente para que pueda usar cpu
