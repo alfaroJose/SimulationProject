@@ -19,6 +19,7 @@ public class Simulator {
 
     private NumberGenerator gen;
 
+    private  ArrayList <Program> colaES;
     private ArrayList <Program> colaCPU; //almacena las programas de la simulacion para al final de una corrida poder calcular el tiempo que pasa en el sistema promedio
     //Se ocupa??
     private ArrayList <Program> programas; //almacena las programas de la simulacion para al final de una corrida poder calcular el tiempo que pasa en el sistema promedio
@@ -26,6 +27,7 @@ public class Simulator {
     private int longitudColaCPU;
     private int longitudColaES;
     private boolean servidorOcupadoCPU; //Si es false es que está libre
+    private boolean servidorOcupadoES;
 
 
 
@@ -39,9 +41,11 @@ public class Simulator {
         gen = new NumberGenerator();
         programas =  new ArrayList<Program>();
         colaCPU = new ArrayList<Program>();
+        colaES = new ArrayList<Program>();
         longitudColaCPU = 0;
         longitudColaES = 0;
         servidorOcupadoCPU = false;
+        servidorOcupadoES = false;
     }
 
     public void runSimulator(){
@@ -149,7 +153,18 @@ public class Simulator {
                         System.out.println("Programa " + programaActual.getP_id() + " está en evento 2");
                         if (longitudColaES > 0){
                             System.out.println("Longitud de colaES es mayor a cero");
-                            longitudColaES = longitudColaES -1;
+                            longitudColaES = longitudColaES - 1;
+                            Program programaSiguiente = (Program) colaES.get(0);//Tomamos el primer valor de la lista
+                            colaES.remove(0); //Sacamos de la lista el primer evento
+                            programaSiguiente.setTiempoSistema(programaSiguiente.getTiempoSistema() + (reloj - programaSiguiente.getTiempoActual()));
+                            programaSiguiente.setTiempoActual(programaSiguiente.getTiempoActual() + (reloj - programaSiguiente.getTiempoActual()));
+                            agregarEvento(programaSiguiente);
+
+
+                        } else { //No hay nadie esperando para usar E/S
+                            //servidorOcupadoCPU = false; //no-> estadoServidor = libre. El de CPU o E/S?
+                            //servidorOcupadoES = true;
+
                             u = gen.generarTiempoUsoDispositvo();
                             programaActual.setTiempoActual(programaActual.getTiempoActual() + u); //E2 = Reloj + Z
 
@@ -188,8 +203,6 @@ public class Simulator {
                                 }
 
                             }
-                        } else {
-                            servidorOcupadoCPU = false; //no-> estadoServidor = libre. El de CPU o E/S?
 
                         }
 
@@ -209,28 +222,21 @@ public class Simulator {
 
 
                             //Donde va el if de longitudColaCPU? que hace cuando el destino es solo salir del sistema, liberar cpu pero hay gente en colade cpu
+                            //no se ocupa sí se pregunta longcola>0 al final
 
-                            /*if(longitudColaCPU > 0){
+                            servidorOcupadoCPU = false;
+                            //Hay que preguntar por la cola para poner a usar CPU al siguuiente programa si es que hay
+                            if (longitudColaCPU > 0){
+                                System.out.println("Longitud de colaCPU : " + longitudColaCPU);
                                 longitudColaCPU = longitudColaCPU - 1;
-                            } else {
-                                servidorOcupadoCPU = false;
-                            }*/
+                                Program programaSiguiente = (Program) colaCPU.get(0);//Tomamos el primer valor de la lista
+                                colaCPU.remove(0); //Sacamos de la lista el primer evento
+                                programaSiguiente.setTiempoSistema(programaSiguiente.getTiempoSistema() + (reloj - programaSiguiente.getTiempoActual()));
+                                programaSiguiente.setTiempoActual(programaSiguiente.getTiempoActual() + (reloj - programaSiguiente.getTiempoActual()));
+                                //programaSiguiente.setTipoEvento(3);
+                                programaActual = programaSiguiente;
 
-
-                        } else if (d == 2){ //El destino es ir a E/S
-                            servidorOcupadoCPU = false;
-                            programaActual.setTipoEvento(2);
-                            agregarEvento(programaActual);
-
-                        } else { //d == 3 El destino es volver a CPU
-                            //Lo mismo de E1 sin generar llegada
-                            servidorOcupadoCPU = false;
-
-                            if (servidorOcupadoCPU){ //Si el servidor del CPU está ocupado
-                                longitudColaCPU = longitudColaCPU + 1;
-                                colaCPU.add(programaActual);
-
-                            } else { //El servidor está libre
+                                //Lo mismo de E1 sin generar llegada
                                 servidorOcupadoCPU = true; //Lo ponemos en ocupado
                                 z = gen.generarInterrupcion();
                                 if (z <= 49){ //Sí ocurre una interrupción
@@ -264,27 +270,74 @@ public class Simulator {
                                     programaActual.setDestino(3);
                                     agregarEvento(programaActual); //Se agrega a la lista
                                 }
-
                             }
 
-                            if(longitudColaCPU > 0){
+                        } else if (d == 2){ //El destino es ir a E/S
+                            servidorOcupadoCPU = false; //?redundante
+                            if (servidorOcupadoES){ //No se puede liberar E/S porque no se ha empezado a usar, hay que mandarlo a cola
+                                longitudColaES++;
+                                colaES.add(programaActual);
+                            } else { //Se puede liberar E/S
+                                programaActual.setTipoEvento(2);
+                                agregarEvento(programaActual);
+                            }
+
+
+                        } else { //d == 3 El destino es volver a CPU
+                            //Lo mismo de E1 sin generar llegada
+                            //Primero libero el CPU, luego pregunto si hay gente en cola, sino puedo volver a usarlo,
+                            //pero si sí tengo que meterme a la cola y esperar.
+                            servidorOcupadoCPU = false; //Se libera CPU
+                            if (longitudColaCPU > 0){
+                                //sacar de en cola al siguiente para que pueda usar cpu
                                 System.out.println("Longitud de colaCPU : " + longitudColaCPU);
                                 longitudColaCPU = longitudColaCPU - 1;
-                                Program programaSiguiente = (Program) listaEventos.get(0);//Tomamos el primer valor de la lista
-                                listaEventos.remove(0); //Sacamos de la lista el primer evento
+                                Program programaSiguiente = (Program) colaCPU.get(0);//Tomamos el primer valor de la lista
+                                colaCPU.remove(0); //Sacamos de la lista el primer evento
+                                programaSiguiente.setTiempoSistema(programaSiguiente.getTiempoSistema() + (reloj - programaSiguiente.getTiempoActual()));
+                                programaSiguiente.setTiempoActual(programaSiguiente.getTiempoActual() + (reloj - programaSiguiente.getTiempoActual()));
                                 agregarEvento(programaSiguiente);
                             } else {
+                                //Cómo no no hay nadie más que quiere usar CPU, puedo ir directamente al servidor de CPU sin hacer cola
                                 System.out.println("Longitud de colaCPU : " + longitudColaCPU);
-                                servidorOcupadoCPU = false; //no-> estadoServidor = libre
+                                //servidorOcupadoCPU = false; //no-> estadoServidor = libre
+
+                                //Lo mismo de E1 sin generar llegada
+                                servidorOcupadoCPU = true; //Lo ponemos en ocupado
+                                z = gen.generarInterrupcion();
+                                if (z <= 49){ //Sí ocurre una interrupción
+                                    System.out.println("Interrupción en E3 es : " + z + "= Sí ocurre");
+
+                                    w = gen.generarTipoInterrupcion();
+                                    if (w <= 39){ //La interrupción es E/S
+                                        programaActual.setDestino(2);
+                                        System.out.println("Tipo  de Interrupción después de E3 es : " + w + " = E/S");
+                                    } else {
+                                        programaActual.setDestino(1);
+                                        System.out.println("Tipo  de Interrupción después de E3 es : " + w + " = Finalizar");
+                                    }
+                                    y = gen.generarTiempoInterrupcion(quantum);
+                                    programaActual.setTiempoActual(programaActual.getTiempoActual() + y);
+                                    programaActual.setTiempoUsoCPU(programaActual.getTiempoUsoCPU() + y);
+                                    programaActual.setTiempoSistema(programaActual.getTiempoSistema() + y);
+
+
+                                    programaActual.setTipoEvento(3);
+                                    agregarEvento(programaActual); //Se agrega a la lista
+                                } else{ //No ocurre una interrupción
+                                    System.out.println("Interrupción en E3 es : " + z + "= NO ocurre");
+
+                                    programaActual.setTiempoActual(programaActual.getTiempoActual() + quantum);
+                                    programaActual.setTiempoUsoCPU(programaActual.getTiempoUsoCPU() + quantum);
+                                    programaActual.setTiempoSistema(programaActual.getTiempoSistema() + quantum);
+
+
+                                    programaActual.setTipoEvento(3);
+                                    programaActual.setDestino(3);
+                                    agregarEvento(programaActual); //Se agrega a la lista
+                                }
                             }
-
                         }
-
-
-                        //programaActual.setTiempoActual(programaActual.getTiempoActual() + 15); //Es solo una prueba
-                        //programaActual.setTipoEvento(3);
-                        //agregarEvento(programaActual); //Se agrega a la lista
-
                         break;
                 }
             }
