@@ -29,13 +29,13 @@ public class Main {
                     "Ingrese los datos necesarios para ejecutar las simulaciones");
 
             while (numero < 0) {
-                System.out.println("Digite el numero maximo de corridas de la simulacion: ");
+                System.out.println("Digite el numero maximo de corridas de la simulacion:");
                 numero = reader.nextInt();
                 if (numero < 0) System.out.println("El número máximo de corridas no puede ser negativo o cero");
             }
 
             while (tiempo < 0) {
-                System.out.println("Digite el tiempo total en segundos para correr cada vez la simulacion : ");
+                System.out.println("Digite el tiempo total en segundos para correr cada vez la simulacion:");
                 tiempo = reader.nextInt();
                 if (tiempo < 0) System.out.println("El tiempo no puede ser negativo o cero");
             }
