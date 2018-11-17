@@ -197,8 +197,9 @@ public class Simulator {
                             /*El programa se libera de E/S hasta seg x y luego va a usar CPU entonces generamos valores aleaorios
                             * para mandar a E3 con destino correspondiente si preguntamos por el servidorCPU ocupado estaríamos preguntando en el tiempo de reloj actual
                             * no el tiempo en que E/S se libere y no sabemos si CPU va a estar ocupado en ese momento*/
-                            if (servidorOcupadoCPU){ //Si el servidor del CPU está ocupado
+                            if (servidorOcupadoCPU){ //Si el servidor del CPU está ocupado lo metemos en cola y ponemos el evento en 3
                                 longitudColaCPU = longitudColaCPU + 1;
+                                programaActual.setTipoEvento(3);
                                 colaCPU.add(programaActual);
                                 //servidorOcupadoES = false;
 
