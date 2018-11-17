@@ -229,14 +229,13 @@ public class Simulator {
 
                             servidorOcupadoCPU = false;
                             //Hay que preguntar por la cola para poner a usar CPU al siguuiente programa si es que hay
-                            if (longitudColaCPU > 0){
+                            if (longitudColaCPU > 0){ //cuando no hay cola no pasa nada
                                 System.out.println("Longitud de colaCPU : " + longitudColaCPU);
                                 longitudColaCPU = longitudColaCPU - 1;
                                 Program programaSiguiente = (Program) colaCPU.get(0);//Tomamos el primer valor de la lista
                                 colaCPU.remove(0); //Sacamos de la lista el primer evento
                                 programaSiguiente.setTiempoSistema(programaSiguiente.getTiempoSistema() + (reloj - programaSiguiente.getTiempoActual()));
                                 programaSiguiente.setTiempoActual(programaSiguiente.getTiempoActual() + (reloj - programaSiguiente.getTiempoActual()));
-                                //programaSiguiente.setTipoEvento(3);
                                 programaActual = programaSiguiente;
 
                                 //Lo mismo de E1 sin generar llegada
@@ -299,7 +298,6 @@ public class Simulator {
                                 colaCPU.remove(0); //Sacamos de la lista el primer evento
                                 programaSiguiente.setTiempoSistema(programaSiguiente.getTiempoSistema() + (reloj - programaSiguiente.getTiempoActual()));
                                 programaSiguiente.setTiempoActual(programaSiguiente.getTiempoActual() + (reloj - programaSiguiente.getTiempoActual()));
-                                agregarEvento(programaSiguiente);
                                 //Al programa actual que acaba de liberar CPU hay que mandarlo a la cola y al programaSig de la cola hay que ponerlo a uasar CPU
                                 colaCPU.add(programaActual);
                                 longitudColaCPU++;
