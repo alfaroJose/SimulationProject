@@ -85,7 +85,7 @@ public class Simulator {
                 switch (programaActual.tipoEvento) {
                     case 1: //Evento 1
                         System.out.println("Programa " + programaActual.getP_id() + " está en evento 1");
-                        System.out.println("Servidor ocupado : " + servidorOcupadoCPU);
+                        System.out.println("Servidor CPU ocupado : " + servidorOcupadoCPU);
 
                         if (servidorOcupadoCPU){ //Si el servidor del CPU está ocupado
                             longitudColaCPU = longitudColaCPU + 1;
@@ -95,7 +95,7 @@ public class Simulator {
 
                         } else{ //El servidor está libre
                             servidorOcupadoCPU = true; //Lo ponemos en ocupado
-                            System.out.println("Servidor ocupado : " + servidorOcupadoCPU);
+                            System.out.println("Servidor CPU ocupado : " + servidorOcupadoCPU);
 
                             z = gen.generarInterrupcion();
                             if (z <= 49){ //Sí ocurre una interrupción
@@ -145,20 +145,44 @@ public class Simulator {
                         agregarEvento(programaActual);
 
 
-
-
-
                         break;
+
+
+
                     case 2: //Evento 2
                         System.out.println("Programa " + programaActual.getP_id() + " está en evento 2");
-                        if (longitudColaES > 0){ /*No he pasado por este caso con el debug*/
-                            System.out.println("Longitud de colaES es mayor a cero");
+                        if (longitudColaES > 0){
+                            System.out.println("Longitud de colaES es : " + longitudColaES);
+                            servidorOcupadoES = false;
                             longitudColaES = longitudColaES - 1;
                             Program programaSiguiente = (Program) colaES.get(0);//Tomamos el primer valor de la lista
                             colaES.remove(0); //Sacamos de la lista el primer evento
+                            //El programa que estaba esperando para usar E/S ya puede usarlo y cálcula el tiempo que duro usando E/S
                             programaSiguiente.setTiempoSistema(programaSiguiente.getTiempoSistema() + (reloj - programaSiguiente.getTiempoActual()));
                             programaSiguiente.setTiempoActual(programaSiguiente.getTiempoActual() + (reloj - programaSiguiente.getTiempoActual()));
+
+                            u = gen.generarTiempoUsoDispositvo();
+                            //se suma tiempo de uso y tiempo en el sistema y tiempo actual del programa:
+                            programaSiguiente.setTiempoActual(programaSiguiente.getTiempoActual() + u); //E2 = Reloj + Z
+                            programaActual.setTiempoUsoES(programaSiguiente.getTiempoUsoES() + u);
+                            programaSiguiente.setTiempoSistema(programaSiguiente.getTiempoSistema() + u);
+                            programaSiguiente.setTipoEvento(2);
                             agregarEvento(programaSiguiente);
+
+                            //El programa que acaba de liberar E/S debe volver al CPU
+                            if (servidorOcupadoCPU){
+                                System.out.println("Servidor CPU ocupado : " + servidorOcupadoCPU);
+                                longitudColaCPU = longitudColaCPU + 1;
+                                programaActual.setTipoEvento(3);
+                                programaActual.setDestino(3);
+                                colaCPU.add(programaActual);
+                            } else { //No hay nadie usando CPU por lo que el programa actual que acaba de liberar E/S puede ir a liberar CPU
+                                System.out.println("Servidor CPU ocupado : " + servidorOcupadoCPU);
+                                programaActual.setDestino(3);
+                                programaActual.setTipoEvento(3);
+                                agregarEvento(programaActual);
+
+                            }
 
 
                         } else { //No hay nadie esperando para usar E/S
@@ -280,7 +304,7 @@ public class Simulator {
 
                         } else if (d == 2){ //El destino es ir a E/S
                             servidorOcupadoCPU = false; //?redundante
-                            if (servidorOcupadoES){ //No se puede liberar E/S porque no se ha empezado a usar, hay que mandarlo a cola /*No he pasado por este caso en el debug*/
+                            if (servidorOcupadoES){ /*No se puede usar E/S porque hay otro programa usándolo. Se manda a la cola y se libera el CPU*/
                                 longitudColaES++;
                                 colaES.add(programaActual);
                             } else { //Se puede liberar E/S
