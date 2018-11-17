@@ -13,7 +13,7 @@ public class Main {
 
         while( numero <= 0 ) {
 
-            System.out.println("Digite 1 para 3/600/6/Exponencial o 2 para 3/600/6/Normal o lo que sea para manualmente ");
+            /*System.out.println("Digite 1 para 3/600/6/Exponencial o 2 para 3/600/6/Normal o lo que sea para manualmente ");
             numero = reader.nextInt();
             if (numero == 1){
                 Simulator simulator = new Simulator(3, 600, 6, 1);
@@ -23,24 +23,27 @@ public class Main {
                 Simulator simulator = new Simulator(3, 600, 6, 2);
                 simulator.runSimulator();
                 break;
-            }
+            }*/
 
-            while (numero <= 0) {
+            System.out.println("Simulación de Round Robin con un solo CPU\n" +
+                    "Ingrese los datos necesarios para ejecutar las simulaciones");
+
+            while (numero < 0) {
                 System.out.println("Digite el numero maximo de corridas de la simulacion: ");
                 numero = reader.nextInt();
-                if (numero <= 0) System.out.println("El número máximo de corridas no puede ser negativo o cero");
+                if (numero < 0) System.out.println("El número máximo de corridas no puede ser negativo o cero");
             }
 
-            while (tiempo <= 0) {
+            while (tiempo < 0) {
                 System.out.println("Digite el tiempo total en segundos para correr cada vez la simulacion : ");
                 tiempo = reader.nextInt();
-                if (tiempo <= 0) System.out.println("El tiempo no puede ser negativo o cero");
+                if (tiempo < 0) System.out.println("El tiempo no puede ser negativo o cero");
             }
 
-            while (quantum <= 0) {
-                System.out.println("Digite el quantum: ");
+            while (quantum < 0) {
+                System.out.println("Digite el quantum del Round Robin: ");
                 quantum = reader.nextInt();
-                if (quantum <= 0) System.out.println("El quantum no puede ser negativo o cero");
+                if (quantum < 0) System.out.println("El quantum no puede ser negativo o cero");
             }
 
             while (distribucion < 1 || distribucion > 2) {
