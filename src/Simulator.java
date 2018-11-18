@@ -50,6 +50,15 @@ public class Simulator {
 
     public void runSimulator(){
 
+        //Promedios finales de todas las corridas.
+        double tiempoSistemaFinal = 0;
+        double tiempoUsoCPUFinal = 0;
+        double tiempoUsoESFinal = 0;
+        double tiempoOcupacionCPUFinal = 0;
+        double tiempoColasFinal = 0;
+        double eficienciaFinal = 0;
+
+
         DecimalFormat df = new DecimalFormat("#.####");
         df.setRoundingMode(RoundingMode.CEILING);
 
@@ -436,15 +445,42 @@ public class Simulator {
 
                 }
             }
-            corridaActual = corridaActual + 1;
+
+
+            System.out.printf("---------PROMEDIOS DE LA CORRIDA %d--------  %n", corridaActual );
             double tiempoPromedioSistema = calcularTiempoSistema();
             System.out.println("El tiempo promedio total en el sistema para un programa es : " + tiempoPromedioSistema);
+            tiempoSistemaFinal += tiempoPromedioSistema;
+
             double tiempoUsoCPUTotal = calcularTiempoUsoCPU();
             System.out.println("El tiempo promedio por programa de uso de CPU es : " + tiempoUsoCPUTotal);
-            double tiempoUsoESTotal = calcularTiempoUsoES();
-            System.out.println("El tiempo promedio de uso de disposotivo de E/S por cada programa: " + tiempoUsoESTotal);
+            tiempoUsoCPUFinal += tiempoUsoCPUTotal;
 
+            double tiempoUsoESTotal = calcularTiempoUsoES();
+            System.out.println("El tiempo promedio de uso de disposotivo de E/S por cada programa es: " + tiempoUsoESTotal);
+            tiempoUsoESFinal += tiempoUsoESTotal;
+
+            System.out.println("El tiempo promedio de ocupacion del CPU es: " + calcularTiempoOcupacionCPU());
+            tiempoOcupacionCPUFinal += calcularTiempoOcupacionCPU();
+
+            System.out.println("El tiempo promedio en colas es: " + calcularTiempoColas());
+            tiempoColasFinal += calcularTiempoColas();
+
+            System.out.println("El coeficiente de eficiencia es: " + calcularEficiencia());
+            eficienciaFinal += calcularEficiencia();
+
+
+            corridaActual = corridaActual + 1;
         }
+
+        System.out.printf("---------PROMEDIOS FINALES DE LAS %d CORRIDAS--------  %n", numCorridas );
+        System.out.println("El tiempo promedio total en el sistema para un programa es: " + tiempoSistemaFinal / numCorridas );
+        System.out.println("El tiempo promedio por programa de uso de CPU es: " + tiempoUsoCPUFinal / numCorridas );
+        System.out.println("El tiempo promedio de uso de disposotivo de E/S por cada programa es: " + tiempoUsoESFinal / numCorridas );
+        System.out.println("El tiempo promedio de ocupacion del CPU es: " + tiempoOcupacionCPUFinal / numCorridas );
+        System.out.println("El tiempo promedio en colas es: " + tiempoColasFinal / numCorridas );
+        System.out.println("El coeficiente de eficiencia es: " + eficienciaFinal / numCorridas );
+
     }
 
     /*Calcular el tiempo promedio total en el sistema para un programa*/
@@ -454,7 +490,7 @@ public class Simulator {
         int cantidad = programas.size();
         double sumatoria = 0;
         double total = 0;
-        System.out.println("cantidad de programas :" + cantidad);
+        //System.out.println("cantidad de programas :" + cantidad);
         for (int i = 0; i < cantidad; i++){
             Program e = (Program) programas.get(i);
             sumatoria = sumatoria + e.getTiempoSistema();
@@ -473,7 +509,7 @@ public class Simulator {
         int cantidad = programas.size();
         double sumatoria = 0;
         double total = 0;
-        System.out.println("cantidad de programas :" + cantidad);
+        //System.out.println("cantidad de programas :" + cantidad);
         for (int i = 0; i < cantidad; i++){
             Program e = (Program) programas.get(i);
             sumatoria = sumatoria + e.getTiempoUsoCPU();
@@ -490,7 +526,7 @@ public class Simulator {
         int cantidad = programas.size();
         double sumatoria = 0;
         double total = 0;
-        System.out.println("cantidad de programas :" + cantidad);
+        //System.out.println("cantidad de programas :" + cantidad);
         for (int i = 0; i < cantidad; i++){
             Program e = (Program) programas.get(i);
             sumatoria = sumatoria + e.getTiempoUsoES();
@@ -498,6 +534,21 @@ public class Simulator {
         }
         total = sumatoria/cantidad;
         return total;
+    }
+
+    /*Calcular la tasa de ocupacion del CUP: tiempo de uso entre el tiempo total de simulacion*/
+    public double calcularTiempoOcupacionCPU(){
+        return  calcularTiempoUsoCPU() / tiempoTotal;
+    }
+
+    /*Calcular tiempo en colas: tiempo total - ( tiempo CPU + tiempo E/S)*/
+    public double calcularTiempoColas(){
+        return calcularTiempoSistema() - ( calcularTiempoUsoCPU() + calcularTiempoUsoES() );
+    }
+
+    /*Calcular coeficiente de eficiencia: tiempo en colas  / tiempo total*/
+    public double calcularEficiencia(){
+        return calcularTiempoColas() / calcularTiempoSistema();
     }
 
     public static void agregarEvento(Program p) {
