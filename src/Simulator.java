@@ -13,23 +13,22 @@ public class Simulator {
     private int numCorridas; //Cantidad de veces que se corre la simulacion
     private int corridaActual; //Numero de corrida por la que se va
     private double tiempoTotal; //Tiempo total que corre cada vez la simulacion
-    private double reloj; //tiempo de reloj actual
-    private double quantum;
-    private int distribuicion;
-
-    private NumberGenerator gen;
-
+    private double reloj; //Tiempo de reloj actual
+    private double quantum;//Tiempo que ocupa el CPU un programa, usado por el Round Robin
+    private int distribuicion;//Distribuvión en la que se generan las llegadas de los programas al sistema, pueden ser exponenciales o normales
+    private NumberGenerator gen;//Instancia de la clase NumberGenerator, posee metodos para la generación de numeros aleatorios
     private  ArrayList <Program> colaES; //almacena los programas que están en la cola de E/S esperando poder usar el dispositvo
     private ArrayList <Program> colaCPU; //almacena las programas que están en la Cola del CPU esperando poder usarlo
     private ArrayList <Program> programas; //almacena las programas de la simulacion para al final de una corrida poder calcular las estadísticas
     public static List<Program> listaEventos; //Contiene la lista de los eventos por ejecutar
-    private int longitudColaCPU;
-    private int longitudColaES;
+    private int longitudColaCPU;//Tamaño de la cola del CPU
+    private int longitudColaES;//Tamaño de la cola de E/S
     private boolean servidorOcupadoCPU; //Si es false es que está libre
     private boolean servidorOcupadoES; //Si es false es que está libre
     private int contadorProgramas; //Lleva el contador de programas que salen del sistema
 
 
+    /*Contructor que inicializa la simulación con los datos ingresados por el usuario*/
     public Simulator(int numVeces, double tiempoMax, double quantum, int distribucion){
         numCorridas = numVeces;
         tiempoTotal = tiempoMax;
@@ -48,8 +47,8 @@ public class Simulator {
         contadorProgramas = 0;
     }
 
+    /*Corre la simulación del round robin con un solo CPU con los datos ingresados por el usuario*/
     public void runSimulator(){
-
         //Promedios finales de todas las corridas.
         double tiempoSistemaFinal = 0;
         double tiempoUsoCPUFinal = 0;
@@ -58,7 +57,7 @@ public class Simulator {
         double tiempoColasFinal = 0;
         double eficienciaFinal = 0;
 
-
+        //Redondeo a 4 decimales
         DecimalFormat df = new DecimalFormat("#.####");
         df.setRoundingMode(RoundingMode.CEILING);
 
@@ -75,25 +74,20 @@ public class Simulator {
             programaActual.setTipoEvento(1); //El primer evento del programa al ser generado es llegar al sistema en tiempo 0
             programas.add(programaActual); //Se añade a la lista de programas
             agregarEvento(programaActual); //Se mete el programa a una cola de Eventos
-            int z;
-            int w;
-            int d;
-            double y;
-            double u;
-            double x;
+            int z, w, d;
+            double y, u, x;
 
             while(reloj < tiempoTotal){
-
                 programaActual = (Program) listaEventos.get(0);//Tomamos el primer valor de la lista
                 listaEventos.remove(0); //Sacamos de la lista el primer evento
                 reloj = programaActual.getTiempoActual(); //Reloj = E1 o E2 o E3 dependendiende de la lista de eventos ordenada según tiempo
-                System.out.println("Reloj : " + reloj);
+                System.out.println("Reloj : " + Double.parseDouble(df.format(reloj)));
                 System.out.println("Servidor CPU ocupado : " + servidorOcupadoCPU);
                 System.out.println("Servidor ES ocupado : " + servidorOcupadoES);
                 System.out.println("Longitud de colaCPU : " + longitudColaCPU);
                 System.out.println("Longitud de colaES : " + longitudColaES);
 
-                switch (programaActual.tipoEvento) {
+                switch (programaActual.getTipoEvento()) {
                     case 1: //Evento 1
                         System.out.println("Programa " + programaActual.getP_id() + " está en evento 1 :  llegada al sistema");
 
@@ -138,11 +132,10 @@ public class Simulator {
                         }
 
                         //2. Generar tiempo entre arribos
-                        if(distribuicion == 1){ //Si el tipo de llegada escogida es exponencial
+                        if(distribuicion == 1) //Si el tipo de llegada escogida es exponencial
                             x = gen.generarLlegadaExponencial();
-                        } else { //Si el tipo de llega escogida es normal
+                        else  //Si el tipo de llega escogida es normal
                             x = gen.generarLlegadaNormal();
-                        }
 
                         /*El tiempo actual de este programa nuevo es el tiempo en que se creó (x) + el reloj.
                         no hay que setearlo el tiempo actual porque el constructor ya hace eso.*/
@@ -152,10 +145,8 @@ public class Simulator {
                         agregarEvento(programaActual);
                         /*Si el tiempo de llegada se excede al máximo de la simulación no hay que contarlo para las estadísticas
                         * por lo tanto no hay que agregarlo ya que nunca va a llegar al al sistema*/
-                        if (programaActual.getTiempoActual() <= tiempoTotal) {
+                        if (programaActual.getTiempoActual() <= tiempoTotal)
                             programas.add(programaActual); //Se añade el nuevo programa a la lista de programas
-                        }
-
                         break;
 
                     case 2: //Evento 2
@@ -218,13 +209,11 @@ public class Simulator {
                                     programaActual.setTiempoSistema(programaActual.getTiempoSistema() + quantum);
                                     programaActual.setDestino(3); //Con esto sabemos que al programa va a liberar CPU y que es lo que hace después
                                 }
-
                                 programaActual.setTipoEvento(3);
                                 agregarEvento(programaActual);
                             }
 
                         } else { //No hay nadie esperando para usar E/S
-
                             /*El programa se libera de E/S hasta seg x y luego va a usar CPU entonces generamos valores aleaorios
                             * para mandar a E3 con destino correspondiente si preguntamos por el servidorCPU ocupado estaríamos preguntando en el tiempo de reloj actual
                             * no el tiempo en que E/S se libere y no sabemos si CPU va a estar ocupado en ese momento*/
@@ -237,7 +226,6 @@ public class Simulator {
                                 servidorOcupadoCPU = true; //Lo ponemos en ocupado
                                 System.out.println("Ahora el servidor CPU ocupado : " + servidorOcupadoCPU);
                                 z = gen.generarInterrupcion();
-
                                 if (z <= 49){ //Sí ocurre una interrupción
                                     w = gen.generarTipoInterrupcion();
                                     System.out.println("Sí ocurre interrupción en E2");
@@ -265,10 +253,8 @@ public class Simulator {
                                     programaActual.setDestino(3); //Con esto sabemos que al programa va a liberar CPU y que es lo que hace después
                                     agregarEvento(programaActual); //Se agrega a la cola de Eventos
                                 }
-
                             }
                         }
-
                         break;
 
                     case 3: //Evento 3
@@ -302,7 +288,6 @@ public class Simulator {
                                 if (z <= 49){ //Sí ocurre una interrupción
                                     System.out.println("Sí ocurre interrupción en E3");
                                     w = gen.generarTipoInterrupcion();
-
                                     if (w <= 39){ //La interrupción es E/S
                                         programaActual.setDestino(2);
                                         System.out.println("Tipo  de Interrupción después de E3 es  para usar dispositivo E/S");
@@ -435,7 +420,6 @@ public class Simulator {
                                 }
                             } else {
                                 //Cómo no no hay nadie más que quiere usar CPU, puedo ir directamente al servidor de CPU sin hacer cola
-
                                 //Lo mismo de E1 sin generar llegada
                                 servidorOcupadoCPU = true; //Lo ponemos en ocupado
                                 z = gen.generarInterrupcion();
@@ -443,7 +427,6 @@ public class Simulator {
                                 if (z <= 49){ //Sí ocurre una interrupción
                                     System.out.println("Sí ocurre interrupción en E3");
                                     w = gen.generarTipoInterrupcion();
-
                                     if (w <= 39){ //La interrupción es E/S
                                         /*Preguntamos por el sevidor de de E/S si no hay nadie se puede mandar director a liberar E/S
                                         pero si sí hay que mandar a cola y esperar, esto lo preguntamos cuando se vuelve a liberar CPU y el destino es 2 (E/S)
@@ -460,7 +443,6 @@ public class Simulator {
                                     programaActual.setTiempoSistema(programaActual.getTiempoSistema() + y);
                                     programaActual.setTipoEvento(3);
                                     agregarEvento(programaActual); //Se agrega a la cola de Eventos
-
                                 } else{ //No ocurre una interrupción
                                     System.out.println("No ocurre interrupción en E3");
                                     programaActual.setTiempoActual(programaActual.getTiempoActual() + quantum);
@@ -473,45 +455,51 @@ public class Simulator {
                             }
                         }
                         break;
-
                 }
             }
 
-
             System.out.printf("---------PROMEDIOS DE LA CORRIDA %d--------  %n", corridaActual );
             double tiempoPromedioSistema = calcularTiempoSistema();
-            System.out.println("El tiempo promedio total en el sistema para un programa es : " + tiempoPromedioSistema);
+            System.out.println("El tiempo promedio total en el sistema para un programa es : " + Double.parseDouble(df.format(tiempoPromedioSistema)));
             tiempoSistemaFinal += tiempoPromedioSistema;
 
             double tiempoUsoCPUTotal = calcularTiempoUsoCPU();
-            System.out.println("El tiempo promedio por programa de uso de CPU es : " + tiempoUsoCPUTotal);
+            System.out.println("El tiempo promedio por programa de uso de CPU es : " + Double.parseDouble(df.format(tiempoUsoCPUTotal)));
             tiempoUsoCPUFinal += tiempoUsoCPUTotal;
 
             double tiempoUsoESTotal = calcularTiempoUsoES();
-            System.out.println("El tiempo promedio de uso de disposotivo de E/S por cada programa es: " + tiempoUsoESTotal);
+            System.out.println("El tiempo promedio de uso de disposotivo de E/S por cada programa es: " + Double.parseDouble(df.format(tiempoUsoESTotal)));
             tiempoUsoESFinal += tiempoUsoESTotal;
 
-            System.out.println("El tiempo promedio de ocupacion del CPU es: " + calcularTiempoOcupacionCPU());
+            System.out.println("El tiempo promedio de ocupacion del CPU es: " + Double.parseDouble(df.format(calcularTiempoOcupacionCPU())));
             tiempoOcupacionCPUFinal += calcularTiempoOcupacionCPU();
 
-            System.out.println("El tiempo promedio en colas es: " + calcularTiempoColas());
+            System.out.println("El tiempo promedio en colas es: " + Double.parseDouble(df.format(calcularTiempoColas())));
             tiempoColasFinal += calcularTiempoColas();
 
-            System.out.println("El coeficiente de eficiencia es: " + calcularEficiencia());
+            System.out.println("El coeficiente de eficiencia es: " + Double.parseDouble(df.format(calcularEficiencia())));
             eficienciaFinal += calcularEficiencia();
 
-
-            corridaActual = corridaActual + 1;
+            if( corridaActual == numCorridas ) System.out.println("Presione ENTER para mostrar los promedios de todas las corridas");
+            else System.out.println("Presione ENTER para continuar con la siguiente simulación...");
+            corridaActual++;
+            presioneCualquierTecla();
         }
 
         System.out.printf("---------PROMEDIOS FINALES DE LAS %d CORRIDAS--------  %n", numCorridas );
-        System.out.println("El tiempo promedio total en el sistema para un programa es: " + tiempoSistemaFinal / numCorridas );
-        System.out.println("El tiempo promedio por programa de uso de CPU es: " + tiempoUsoCPUFinal / numCorridas );
-        System.out.println("El tiempo promedio de uso de disposotivo de E/S por cada programa es: " + tiempoUsoESFinal / numCorridas );
-        System.out.println("El tiempo promedio de ocupacion del CPU es: " + tiempoOcupacionCPUFinal / numCorridas );
-        System.out.println("El tiempo promedio en colas es: " + tiempoColasFinal / numCorridas );
-        System.out.println("El coeficiente de eficiencia es: " + eficienciaFinal / numCorridas );
+        System.out.println("El tiempo promedio total en el sistema para un programa es: " + Double.parseDouble(df.format(tiempoSistemaFinal / numCorridas)) );
+        System.out.println("El tiempo promedio por programa de uso de CPU es: " + Double.parseDouble(df.format(tiempoUsoCPUFinal / numCorridas)) );
+        System.out.println("El tiempo promedio de uso de dispositivo de E/S por cada programa es: " + Double.parseDouble(df.format(tiempoUsoESFinal / numCorridas)) );
+        System.out.println("El tiempo promedio de ocupacion del CPU es: " + Double.parseDouble(df.format(tiempoOcupacionCPUFinal / numCorridas)) );
+        System.out.println("El tiempo promedio en colas es: " + Double.parseDouble(df.format(tiempoColasFinal / numCorridas)) );
+        System.out.println("El coeficiente de eficiencia es: " + Double.parseDouble(df.format(eficienciaFinal / numCorridas)) );
 
+    }
+
+    /*Metodo para leer la tecla ENTER. Sirve para pausar la simulación con cada impresión de estadísticas*/
+    private void presioneCualquierTecla() {
+        try { System.in.read(); }
+        catch(Exception e) { e.printStackTrace(); }
     }
 
     /*Calcular el tiempo promedio total en el sistema para un programa*/
@@ -521,12 +509,9 @@ public class Simulator {
         int cantidad = programas.size();
         double sumatoria = 0;
         double total = 0;
-        //System.out.println("cantidad de programas :" + cantidad);
         for (int i = 0; i < cantidad; i++){
             Program e = (Program) programas.get(i);
             sumatoria = sumatoria + e.getTiempoSistema();
-            //System.out.println("Programa : " +e.getP_id() + " tiempo sistema : " + e.getTiempoSistema());
-
         }
         total = sumatoria/cantidad;
         return total;
@@ -540,11 +525,9 @@ public class Simulator {
         int cantidad = programas.size();
         double sumatoria = 0;
         double total = 0;
-        //System.out.println("cantidad de programas :" + cantidad);
         for (int i = 0; i < cantidad; i++){
             Program e = (Program) programas.get(i);
             sumatoria = sumatoria + e.getTiempoUsoCPU();
-            //System.out.println("Programa : " + e.getP_id() + " tiempo uso CPU : " + e.getTiempoUsoCPU());
         }
         total = sumatoria/cantidad;
         return total;
@@ -557,11 +540,9 @@ public class Simulator {
         int cantidad = programas.size();
         double sumatoria = 0;
         double total = 0;
-        //System.out.println("cantidad de programas :" + cantidad);
         for (int i = 0; i < cantidad; i++){
             Program e = (Program) programas.get(i);
             sumatoria = sumatoria + e.getTiempoUsoES();
-            //System.out.println("Programa : " + e.getP_id() + " tiempo uso E/S : " + e.getTiempoUsoES());
         }
         total = sumatoria/cantidad;
         return total;
@@ -582,6 +563,7 @@ public class Simulator {
         return calcularTiempoColas() / calcularTiempoSistema();
     }
 
+    /*Metodo que agrega en la cola de eventos un nuevo programa y la ordena ascendentemente*/
     public static void agregarEvento(Program p) {
         if (listaEventos.isEmpty()) {//En caso que la cola esté vacía
             listaEventos.add(0,p);
@@ -592,11 +574,8 @@ public class Simulator {
             int espacio = 0;
             while (it.hasNext() && !campo) {
                 aux = (Program) it.next();
-                if (aux.getTiempoActual() <= p.getTiempoActual()) {
-                    ++espacio;
-                } else {
-                    campo = true;
-                }
+                if (aux.getTiempoActual() <= p.getTiempoActual()) ++espacio;
+                else campo = true;
             }
             listaEventos.add(espacio, p);
         }

@@ -12,19 +12,6 @@ public class Main {
         String confirmar = "";
 
         while( numero <= 0 ) {
-
-            /*System.out.println("Digite 1 para 3/600/6/Exponencial o 2 para 3/600/6/Normal o lo que sea para manualmente ");
-            numero = reader.nextInt();
-            if (numero == 1){
-                Simulator simulator = new Simulator(3, 600, 6, 1);
-                simulator.runSimulator();
-                break;
-            } else if (numero == 2){
-                Simulator simulator = new Simulator(3, 600, 6, 2);
-                simulator.runSimulator();
-                break;
-            }*/
-
             System.out.println("Simulación de Round Robin con un solo CPU\n" +
                     "Ingrese los datos necesarios para ejecutar las simulaciones");
 

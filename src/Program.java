@@ -12,13 +12,13 @@ public class Program {
     1: Llegada de un programa al sistema
     2: Se libera dispositivo E/S
     3: Se libera CPU */
-    int tipoEvento;
+    private int tipoEvento;
 
     /*El destinos posibles puede ser:
     * 1: Salir del sistema (finalizar)
     * 2: Ir al dispositivo/cola E/S
     * 3: Volver al CPU/cola CPU*/
-    int destino;
+    private int destino;
 
     public Program(double tiempoCreacion, int id){
         p_id = id;

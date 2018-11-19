@@ -8,8 +8,10 @@ import java.util.Random;
 
 public class NumberGenerator {
 
+    //Usado para recortar los decimales a los deseados, en este caso 4
     private Random randomizer;
     DecimalFormat df;
+
     public  NumberGenerator(){
         randomizer = new Random(); //Genera un número random entre  0 y 1
         df = new DecimalFormat("#.####");
@@ -18,14 +20,14 @@ public class NumberGenerator {
 
     //Genera el tiempo de llegada de los programas al sistema con distribución exponencial.
     //lambda = 1/30 y lo redondea a 4 decimales
+    //La distribución exponencial tiene una media de 30 segundos
     public double generarLlegadaExponencial(){
         double nuevoValor;
         double r = randomizer.nextDouble(); //Se genera un número random r entra 0 y 1
         while (r == 1 ){
             r = randomizer.nextDouble();
         }
-        nuevoValor = (-30) * (Math.log(1 - r)); //La distribución exponencial tiene una media de 30 segundos
-        return Double.parseDouble(df.format(nuevoValor));
+        return Double.parseDouble(df.format((-30) * (Math.log(1 - r))));
     }
 
     //Genera el tiempo de llegada de los programas al sistema con distribución normal.
@@ -35,8 +37,7 @@ public class NumberGenerator {
         for(int i = 1; i <= 12; i++)
             nuevoValor += randomizer.nextDouble();
         nuevoValor = nuevoValor - 6; //La sumatoria de los r sumados se les resta un 6.
-        double x  = (2*nuevoValor) + 25;
-        return Double.parseDouble(df.format(x));
+        return Double.parseDouble(df.format((2*nuevoValor) + 25));
     }
 
     //Genera el tiempo de uso del dispositivo E/S con una función de densidad.
@@ -49,14 +50,10 @@ public class NumberGenerator {
     public int generarInterrupcion(){
         return randomizer.nextInt(100);
     }
+
     //Genera un valor para saber cuál tipo de interrupción es. 0-39 E/S. 40-99 Finaliza.
-    public int generarTipoInterrupcion(){
-        return randomizer.nextInt(100);
-    }
+    public int generarTipoInterrupcion(){ return randomizer.nextInt(100); }
 
     //Genera el tiempo en el cuál ocurre la interrupción.
-    public double generarTiempoInterrupcion(double b){
-        double x = (b*randomizer.nextDouble() + b)/2;
-        return Double.parseDouble(df.format(x));
-    }
+    public double generarTiempoInterrupcion(double b){ return Double.parseDouble(df.format((b*randomizer.nextDouble() + b)/2)); }
 }
