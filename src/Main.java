@@ -6,10 +6,10 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        int numero, tiempo, quantum, distribucion;
+        int numero, tiempo, quantum, distribucion;//Datos a ingresar por el usuario
         numero = tiempo = quantum = distribucion = -1;
-        Scanner reader = new Scanner(System.in);
-        String confirmar = "";
+        Scanner reader = new Scanner(System.in);//Objeto para usar Scanner y leer input por consola
+        String confirmar = "";//String auxiliar para confirmar una serie de simulaciones
 
         while( numero <= 0 ) {
             System.out.println("Simulación de Round Robin con un solo CPU\n" +
