@@ -3,9 +3,9 @@
  */
 public class Program {
 
-    private int p_id;
+    private int p_id; //identificador del programa
     private double tiempoSistema; //Tiempo total que pasa el programa en el sistema
-    private double tiempoActual;
+    private double tiempoActual; //Tiempo en el que se va a ejecutar el evento del programa
     private double tiempoUsoCPU; //Tiempo total que el programa usa el CPU
     private double tiempoUsoES; //Tiempo total que el programa uso el dispositivo E/S
     /*Los eventos pueden ser

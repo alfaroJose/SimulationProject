@@ -11,13 +11,13 @@ public class NumberGenerator {
     private Random randomizer;
     DecimalFormat df;
     public  NumberGenerator(){
-        randomizer = new Random(); //Genera un número entre  0 y 1
+        randomizer = new Random(); //Genera un número random entre  0 y 1
         df = new DecimalFormat("#.####");
         df.setRoundingMode(RoundingMode.CEILING);
     }
 
     //Genera el tiempo de llegada de los programas al sistema con distribución exponencial.
-    // lamda = 1/30 y lo redondea a 4 decimales
+    //lambda = 1/30 y lo redondea a 4 decimales
     public double generarLlegadaExponencial(){
         double nuevoValor;
         double r = randomizer.nextDouble(); //Se genera un número random r entra 0 y 1
