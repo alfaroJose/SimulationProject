@@ -74,8 +74,8 @@ public class Simulator {
             programaActual.setTipoEvento(1); //El primer evento del programa al ser generado es llegar al sistema en tiempo 0
             programas.add(programaActual); //Se añade a la lista de programas
             agregarEvento(programaActual); //Se mete el programa a una cola de Eventos
-            int z, w, d;
-            double y, u, x;
+            int z, w, d; //Variables auxiliares para la actualización de variables (sumas)
+            double y, u, x; //Variables auxiliares para la actualización de variables (sumas)
 
             while(reloj < tiempoTotal){
                 programaActual = (Program) listaEventos.get(0);//Tomamos el primer valor de la lista
@@ -347,10 +347,10 @@ public class Simulator {
                                         w = gen.generarTipoInterrupcion();
                                         if (w <= 39){ //La interrupción es E/S
                                             programaActual.setDestino(2);
-                                            System.out.println("Tipo  de Interrupción después de E3 es  para usar dispositivo E/S");
+                                            System.out.println("Tipo de Interrupción después de E3 es  para usar dispositivo E/S");
                                         } else {
                                             programaActual.setDestino(1);
-                                            System.out.println("Tipo  de Interrupción después de E3 es  para Finalizar");
+                                            System.out.println("Tipo de Interrupción después de E3 es  para Finalizar");
                                         }
                                         y = gen.generarTiempoInterrupcion(quantum);
                                         programaActual.setTiempoActual(programaActual.getTiempoActual() + y);
@@ -398,10 +398,10 @@ public class Simulator {
                                     w = gen.generarTipoInterrupcion();
                                     if (w <= 39){ //La interrupción es E/S
                                         programaActual.setDestino(2);
-                                        System.out.println("Tipo  de Interrupción después de E3 es  para usar dispositivo E/S");
+                                        System.out.println("Tipo de Interrupción después de E3 es  para usar dispositivo E/S");
                                     } else {
                                         programaActual.setDestino(1);
-                                        System.out.println("Tipo  de Interrupción después de E3 es  para Finalizar");
+                                        System.out.println("Tipo de Interrupción después de E3 es  para Finalizar");
                                     }
                                     y = gen.generarTiempoInterrupcion(quantum);
                                     programaActual.setTiempoActual(programaActual.getTiempoActual() + y);
@@ -432,10 +432,10 @@ public class Simulator {
                                         pero si sí hay que mandar a cola y esperar, esto lo preguntamos cuando se vuelve a liberar CPU y el destino es 2 (E/S)
                                          */
                                         programaActual.setDestino(2);
-                                        System.out.println("Tipo  de Interrupción después de E3 es  para usar dispositivo E/S");
+                                        System.out.println("Tipo de Interrupción después de E3 es  para usar dispositivo E/S");
                                     } else {
                                         programaActual.setDestino(1);
-                                        System.out.println("Tipo  de Interrupción después de E3 es  para Finalizar");
+                                        System.out.println("Tipo de Interrupción después de E3 es  para Finalizar");
                                     }
                                     y = gen.generarTiempoInterrupcion(quantum);
                                     programaActual.setTiempoActual(programaActual.getTiempoActual() + y);

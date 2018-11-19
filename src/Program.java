@@ -14,7 +14,7 @@ public class Program {
     3: Se libera CPU */
     private int tipoEvento;
 
-    /*El destinos posibles puede ser:
+    /*El destino posible puede ser:
     * 1: Salir del sistema (finalizar)
     * 2: Ir al dispositivo/cola E/S
     * 3: Volver al CPU/cola CPU*/
