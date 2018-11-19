@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         int numero, tiempo, quantum, distribucion;//Datos a ingresar por el usuario
-        numero = tiempo = quantum = distribucion = -1;
+        numero = tiempo = quantum = distribucion = -1;//Inicialización de datos de simulación en neutro
         Scanner reader = new Scanner(System.in);//Objeto para usar Scanner y leer input por consola
         String confirmar = "";//String auxiliar para confirmar una serie de simulaciones
 
